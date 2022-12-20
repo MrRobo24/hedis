@@ -813,14 +813,15 @@ xaddOpts
     -> [(ByteString, ByteString)] -- ^ (field, value)
     -> TrimOpts
     -> m (f ByteString)
-xaddOpts key entryId fieldValues opts = sendRequest $
+xaddOpts key entryId fieldValues _ = sendRequest $
     ["XADD", key] ++ optArgs ++ [entryId] ++ fieldArgs
     where
         fieldArgs = concatMap (\(x,y) -> [x,y]) fieldValues
-        optArgs = case opts of
-            NoArgs -> []
-            Maxlen max -> ["MAXLEN", encode max]
-            ApproxMaxlen max -> ["MAXLEN", "~", encode max]
+        optArgs = ["MAXLEN", "~", encode (5000 :: Integer)]
+        -- optArgs = case opts of
+        --     NoArgs -> []
+        --     Maxlen max -> ["MAXLEN", encode max]
+        --     ApproxMaxlen max -> ["MAXLEN", "~", encode max]
 
 xadd
     :: (RedisCtx m f)
